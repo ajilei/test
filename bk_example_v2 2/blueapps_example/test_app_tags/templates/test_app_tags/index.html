@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+    <div class="page-contactus">
+        <!-- 内容 start-->
+        <!--comtactus-detail -->
+        <div class="container mt25">
+			<div class="row" >
+			    <div id="params_div" class="col-md-12 form-columns-2">
+			    				<!-- 	 cc tag   	 -->
+			    	<section class="panel panel-default">
+						<div class="panel-heading">
+							<strong class="show_name">{%trans "业务选择下拉框用法示例" %}</strong>
+						</div>
+						<div class="panel-body  form-horizontal" id="task_name">
+							<div class="form-group">
+								<label for="" class="col-md-1 col-xs-1 control-label" style="text-align: left; width: 80px;">{%trans "业务：" %}<span class="" style="color:red">*</span></label>
+								 <div class="col-md-5 col-xs-5" style="padding-left: 0">
+									<select class="cc_app_select2" id="selector" style="width: 200px"></select>
+								 </div>
+							</div>
+		                    <div class='alert alert-info t_s15'>
+		                        <strong>{%trans "用法详解：" %}</strong>
+								{%trans "业务下拉框" %}
+								<p>{%trans "在模板页面加入： " %}<code>&lt;select class="cc_app_select2" id="selector"&gt;&lt;/select&gt;</code></p>
+								<p>{%trans "配置前端参数：" %}<code>{%trans "params = {'px': 200} // px为选择器宽度参数" %}</code></p>
+								<p>{%trans "通过js异步请求数据：" %}<code>{%trans "$.get('url', params, function(res) { //处理请求结果 } // url为后台接口地址" %}</code></p>
+								<p>{%trans "将数据添加为对应选项： " %}<code>{%trans "$('#selector').append('&lt;option value='app.id'&gt;app.text&lt;/option&gt;') // app.id 和 app.text 为对应业务的标识和描述" %}</code><p>
+								<p>{%trans "通过请求数据设置宽度px: " %}<code>{%trans "$('.cc_app_select2').width(res.width_px) // res.width_px为后端范围数据的字段值" %}</code><p>
+		                    </div>
+						</div>
+					</section>
+			    </div>
+			</div>
+        </div>
+        <!-- 内容 start-->
+    </div>
+{% endblock %}
+
+{% block extra_block %}
+	<script type="text/javascript">
+		$(".cc_app_select2").select2({
+			placeholder: "{% trans '请选择业务' %}"
+		});
+
+		params = {'px': 200}; // 配置下拉框宽度
+		$.get("{{SITE_URL}}example/test_app_tags/get_app_list/", params, function(res) {
+			const app_list = res.app_list;
+			$(".cc_app_select2").width(res.width_px);
+			if (app_list.length == 0) {
+				alert(res.app_message);
+				return;
+			}
+			app_list.forEach(app => {
+				$("#selector").append("<option value=\"" + app.id + "\">"+ app.text +"</option>")
+			})
+		})
+	</script>
+{% endblock %}

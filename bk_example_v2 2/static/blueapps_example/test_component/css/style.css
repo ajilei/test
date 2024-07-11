@@ -1,0 +1,12 @@
+table td {
+    word-break: break-word;
+}
+
+#app_list {
+    table-layout:fixed;
+}
+
+code {
+    background-color: #F0F1F5 !important;
+    color: #63656E !important;
+}

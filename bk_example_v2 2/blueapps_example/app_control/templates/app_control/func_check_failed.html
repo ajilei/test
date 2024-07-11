@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{% trans "功能未开启" %}</title>
+</head>
+
+<body style="font-family:Microsoft Yahei;text-align: center;margin-top:20px;" class="king-errorpage-middle">
+    <div class="king-exception-box king-login-page">
+        <img src="{{STATIC_URL}}open/img/expre_403.png">
+        <div style="margin:auto;width:365px;">
+            <h1 style="text-align:left;">{% trans "该功能尚未对外开放！" %}</h1>
+            <div style="text-align:left;">
+	            <p><strong>{% trans "可能原因：" %}</strong></p>
+	            <p>{% trans "1、该管理员关闭了该功能,如有需要请联系管理员；" %}</p>
+	            <p>{% trans "2、系统异常，请联系管理员检查func_code。" %}</p>
+	        </div>
+        </div>
+    </div>
+</body>
+</html>
+
+

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+    <div class="page-contactus">
+        <div class="container mt25">
+            <div class="panel panel-info">
+                <div class="panel-heading">{% trans "功能开关" %}</div>
+                <div class="form-horizontal form-columns-2" style="margin-top: 20px">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">{% trans "功能开关：" %}</label>
+                        <div class="col-sm-10">
+                            <div id="switch" class="switch" data-on="success" data-on-label="{% trans '开启' %}" data-off-label="{% trans '关闭' %}">
+                                {% if is_enabled %}
+                                    <input type="checkbox" checked />
+                                {% else %}
+                                    <input type="checkbox"/>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">{% trans "功能：" %}</label>
+                        <div class="col-sm-10">
+                             <button style="" class="king-btn king-info" onclick="execute_func(this)">{% trans "运行" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">{% trans "基于短信验证码的二步验证" %}</div>
+                <div class="form-horizontal form-columns-2" style="margin-top: 20px">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">{% trans "发送验证码：" %}</label>
+                        <div class="col-sm-10">
+                            <button onclick="send_code()"
+                                    id="btn_send"
+                                    style="width: 125px"
+                                    type="button"
+                                    class="btn btn-box btn-primary">{% trans "发送" %}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bk_verify_code" class="col-sm-2 control-label">{% trans "输入验证码：" %}</label>
+                        <div class="col-sm-10">
+                            <input id="bk_verify_code" style="height: 34px;">
+                            <button style="width: 77px; margin-top: -3px"
+                                    onclick="verify_code()"
+                                    class="btn btn-box btn-success">{% trans "验证" %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_block %}
+    <script>
+    $('#switch').on('switch-change', function (e, data) {
+        var value = data.value;
+        var status = 1;
+        if(!value){
+            status = 0;
+        }
+        $.post(site_url + 'example/app_control/switch_func/', {'status': status}, function(){}, 'json');
+    });
+    function execute_func(){
+        $.post(site_url + 'example/app_control/execute_func/', {}, function(res){
+            if(res.result){
+                 art.dialog({
+                     title: "{% trans '提示' %}",
+                     lock: true,
+                     content: res.message,
+                 });
+            }
+        }).error(function(res) {
+            const dialog = art.dialog({
+                 title: "{% trans '提示' %}",
+                 lock: true,
+                 content: `
+                    <div id="fail_dialog" class="king-exception-box king-login-page">
+                        <img src="{{STATIC_URL}}open/img/expre_403.png">
+                        <div style="margin:auto;width:365px;">
+                            <h1 style="text-align:left;">{% trans '该功能尚未对外开放！' %}</h1>
+                            <div style="text-align:left;">
+                                <p><strong>{% trans '可能原因：' %}</strong></p>
+                                <p>{% trans '1、该管理员关闭了该功能,如有需要请联系管理员；' %}</p>
+                                <p>{% trans '2、系统异常，请联系管理员检查func_code。' %}</p>
+                            </div>
+                        </div>
+                    </div>`,
+             });
+            dialog.show();
+        })
+    }
+
+    // 倒计时对应的interval_id
+	var time_inter_id;
+	// 发送短信验证码
+	function send_code() {
+        $.ajax({
+            url: site_url + 'account/send_code/',
+            success: ret => {
+                if (ret.result) {
+                    alert("{% trans '验证码已发出' %}");
+                    var btn_send = $('#btn_send');
+                    // 禁用发送按钮
+                    btn_send.attr('disabled', 'disabled');
+                    // 三分钟后可重发
+                    // 时间与SECOND_VERIFY_CONF['RETRY_MINUTES']对应
+                    var left_sec = 3 * 60;
+                    time_inter_id = setInterval(function () {
+                        left_sec--;
+                        btn_send.text('(' + left_sec + "{% trans '秒后可重发)' %}");
+                        if (!left_sec) {
+                            // 重新启用
+                            clearInterval(time_inter_id);
+                            btn_send.removeAttr('disabled');
+                            btn_send.text("{% trans '发送' %}");
+                        }
+                    }, 1000)
+                }
+                else {
+                    alert(ret.message);
+                }
+            }
+        })
+    }
+    // 校验输入的验证码
+    function verify_code() {
+        $.ajax({
+            url: site_url + 'example/app_control/verify_code/',
+            method: 'post',
+            data: {'bk_verify_code': $('#bk_verify_code').val()},
+            success: function (ret) {
+                if (ret.result) {
+                    alert(ret.message)
+                } else {
+                    alert(ret.message)
+                }
+            }
+        })
+    }
+    </script>
+{% endblock %}

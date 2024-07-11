@@ -29,7 +29,7 @@ else:
         PAAS_V2_ENVIRONMENT
     )
 DJANGO_CONF_MODULE = "config.{env}".format(env=ENVIRONMENT)
-
+print(DJANGO_CONF_MODULE)
 try:
     _module = __import__(DJANGO_CONF_MODULE, globals(), locals(), ["*"])
 except ImportError as err:

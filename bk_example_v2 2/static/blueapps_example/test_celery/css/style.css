@@ -1,0 +1,11 @@
+.aui_buttons button {
+    border-radius: 0px !important;
+    background: #4A9BFF !important;
+    color: white !important;
+    border: 0px !important;
+    box-shadow: unset !important;
+    text-shadow: -1px -1px 1px #1c6a9e !important;
+}
+.aui_buttons button:hover {
+    background-color: #2180F5 !important;
+}

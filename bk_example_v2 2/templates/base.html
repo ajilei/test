@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html>
+<head>
+    {% block head %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{% trans "开发样例|蓝鲸智云" %}</title>
+    <link rel="icon" href="{{STATIC_URL}}open/favicon.ico" type="image/x-icon">
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+	<!-- bootstrap css -->
+	<link href="{{ REMOTE_STATIC_URL }}v3/assets/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet">
+	<!-- 禁止bootstrap 响应式 （app根据自身需求启用或禁止bootstrap响应式） -->
+	<link href="{{ REMOTE_STATIC_URL }}v3/assets/bootstrap-3.3.4/css/bootstrap_noresponsive.css" rel="stylesheet">
+    <!-- jquery ui css-->
+    <link href="{{ REMOTE_STATIC_URL }}v3/assets/jquery-ui-1.11.0.custom/jquery-ui.min.css" rel="stylesheet">
+    <!-- datatables css -->
+    <link href="{{STATIC_URL}}blueapps_example/datatables-1.10.7/dataTables.bootstrap.css" rel="stylesheet"/>
+    <!-- 时间日期插件 css -->
+    <link href="{{STATIC_URL}}blueapps_example/daterangepicker-2.0.5/daterangepicker.css" rel="stylesheet">
+    <!-- 状态开关插件 css -->
+    <link href="{{STATIC_URL}}blueapps_example/switchery-master/dist/switchery.css" rel="stylesheet">
+    <!-- bootstrap 状态开关插件 css -->
+    <link href="{{STATIC_URL}}blueapps_example/bootstrap-switch-1.2/bootstrapSwitch.css" rel="stylesheet">
+    <!-- 弹窗插件 -->
+    <link href="{{STATIC_URL}}blueapps_example/bkDialog-1.0/css/ui-dialog.css" rel="stylesheet">
+    <!-- select2 下拉框 -->
+    <link href="{{STATIC_URL}}blueapps_example/select2-3.5.2/select2.css" rel="stylesheet">
+    <!--自定义css-->
+	<link href="{{ STATIC_URL }}open/css/bk.css?v={{ STATIC_VERSION}}" rel="stylesheet">
+    <!-- 平台cs	 -->
+	<link href="{{ REMOTE_STATIC_URL }}v3/bk/css/bk.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}open/css/index.css?v={{ STATIC_VERSION }}">
+    <style>
+    	/*如果你需要给你的应用固定高度和宽度，请在这里修改*/
+		body {min-width:1580px;}
+		.container{
+			width:auto;
+			min-width: 1578px;
+		}
+	</style>
+	{% endblock %}
+</head>
+
+<body>
+    <!--顶部导航 Start-->
+    <nav class="navbar navbar-default king-horizontal-nav2" role="navigation" style="margin-bottom: 0; border-bottom: 0">
+	    <div class="container" style="width: 100%;">
+	        <div class="navbar-header col-md-3 col-sm-3 col-xs-3 logo" style="margin: 0; padding: 0;">
+	            <a class="navbar-brand" href="{{ SITE_URL }}" style="font-size:24px;padding-top: 15px;color: #438bca;">
+	                {% trans "蓝鲸智云开发框架" %}
+	            </a>
+	        </div>
+	        <div class="collapse navbar-collapse navbar-responsive-collapse col-md-9 col-sm-9 col-xs-9" id="king-example-navbar-collapse-2" style="float:right; padding:0;">
+	            <ul class="nav navbar-nav navbar-right">
+                  <span class="avatar" style="cursor: default;">
+                    <img src="{{ STATIC_URL }}open/img/getheadimg.jpg" width="40" alt="Avatar" class="avatar-img">
+                    {% if request.user.is_superuser %}
+                        <i class="crown"></i>
+                    {% endif %}
+                    <span>{{ request.user.username }}</span>
+                  </span>
+                </ul>
+                <ul class="nav navbar-nav" style="float:right;">
+					{% block navigation %}
+	                <li id="home"><a href="{{ SITE_URL }}"><span>{% trans "首页" %}</span></a></li>
+                    <li id="app_control"><a href="{{SITE_URL}}example/app_control/"><span>{% trans "功能样例" %}</span></a></li>
+                    <li id="test_celery"><a href="{{SITE_URL}}example/test_celery/"><span>{% trans "后台任务样例" %}</span></a></li>
+                    <li id="test_component"><a href="{{SITE_URL}}example/test_component/"><span>{% trans "组件样例" %}</span></a></li>
+                    <li id="test_app_tags"><a href="{{SITE_URL}}example/test_app_tags/"><span>{% trans "ajax异步样例" %}</span></a></li>
+                    <!--version_log_html_insert-->
+<li id="version_log"><a href="javascript:show_modal();"><span>{% trans "版本日志" %}</span></a></li>
+                    <li id="guide"><a href="{{ SITE_URL }}dev-guide/"><span>{% trans "开发指引" %}</span></a></li>
+	                <li id="contact"><a href="{{ SITE_URL }}contact/"><span>{% trans "联系我们" %}</span></a></li>
+                    <li style='display: {{IS_DISPLAY_LANGUAGE_CHANGE}};'>
+                        <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
+                            <span>{% trans "语言" %}</span>
+                        </a>
+                        <ul class="dropdown-menu" style=" left:0;right:auto;">
+                            <li onclick="change_language('zh-hans')">
+                                <a href="javascript:;">
+                                    简体中文
+                                </a>
+                            </li>
+                            <li onclick="change_language('en')">
+                                <a href="javascript:;">
+                                    English
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+					{% endblock %}
+	            </ul>
+	        </div>
+	    </div>
+	</nav>
+	<!--顶部导航 End-->
+
+    <!-- 固定宽度居中 start -->
+    {% block content %}{% endblock %}
+
+    <!-- 固定宽度表单居中 end -->
+    <!-- 尾部声明 start -->
+    <div class="foot" id="footer">
+        {% block footerline %} {% endblock %}
+        <ul class="links ft">
+            <li>
+                <a id="contact_us" class="link">{% trans "QQ咨询(800802001)" %}</a>
+                | <a href="http://bbs.bk.tencent.com/forum.php" target="_blank" hotrep="hp.footer.feedback" class="link">{% trans "蓝鲸论坛" %}</a>
+                | <a href="http://bk.tencent.com/" target="_blank" hotrep="hp.footer.feedback" class="link">{% trans "蓝鲸官网" %}</a>
+                | <a href="{{ BK_URL }}" target="_blank" hotrep="hp.footer.feedback" class="link">{% trans "蓝鲸智云工作台" %}</a>
+            </li>
+            <li><p class="copyright">Copyright © 2012-{{NOW.year}} Tencent BlueKing. All Rights Reserved.</p> </li>
+          	<li><p class="copyright">{% trans "蓝鲸智云 版权所有" %}</p> </li>
+        </ul>
+      </div>
+      <!-- 尾部声明 start -->
+</body>
+{% block base_js %}
+<!-- jquery js  -->
+<script src="{{ REMOTE_STATIC_URL }}v3/assets/js/jquery-1.10.2.min.js"></script>
+<script src="{{ REMOTE_STATIC_URL }}jquery/jquery.json-2.3.min.js"></script>
+<!-- 处理jquery兼容问题，jQuery Migrate（迁移）插件包含了1.6.4以来存在但1.9已不支持所有API -->
+<script src="{{ REMOTE_STATIC_URL }}v3/assets/js/jquery-migrate-1.2.1.min.js"></script>
+<!-- bootstrap js  -->
+<script src="{{ REMOTE_STATIC_URL }}v3/assets/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+<!-- jquery ui js-->
+<script src="{{ REMOTE_STATIC_URL }}v3/assets/jquery-ui-1.11.0.custom/jquery-ui.min.js"></script>
+<!-- 平台 js  -->
+<script src="{{ REMOTE_STATIC_URL }}v3/bk/js/bk.js"></script>
+<!-- datatables js -->
+<script src="{{STATIC_URL}}blueapps_example/datatables-1.10.7/jquery.dataTables.js"></script>
+<script src="{{STATIC_URL}}blueapps_example/datatables-1.10.7/dataTables.bootstrap.js"></script>
+<!-- 时间日期插件 js -->
+<script src="{{STATIC_URL}}blueapps_example/daterangepicker-2.0.5/moment.min.js"></script>
+<script src="{{STATIC_URL}}blueapps_example/daterangepicker-2.0.5/daterangepicker.js"></script>
+<!-- 状态开关插件 js -->
+<script src="{{STATIC_URL}}blueapps_example/switchery-master/dist/switchery.js"></script>
+<!-- bootstrap 状态开关插件 js -->
+<script src="{{STATIC_URL}}blueapps_example/bootstrap-switch-1.2/bootstrapSwitch.js"></script>
+<!-- 表单校验插件 -->
+<script src="{{STATIC_URL}}blueapps_example/validate-1.14.0/js/jquery.validate.js"></script>
+<!-- 顶部消息弹窗 -->
+<script src="{{STATIC_URL}}blueapps_example/topbar-1.0/topbar.js"></script>
+<!-- 弹窗插件 -->
+<script src="{{STATIC_URL}}blueapps_example/bkDialog-1.0/js/dialog.js"></script>
+<!-- select2下拉框 -->
+<script src="{{STATIC_URL}}blueapps_example/select2-3.5.2/select2.js"></script>
+
+<!-- 这个是全局配置，如果需要在js中使用app_code和site_url,则这个javascript片段一定要保留 -->
+<script type="text/javascript">
+	var app_code = "{{ APP_CODE }}";			// 在蓝鲸系统里面注册的"应用编码"
+	var site_url = "{{ SITE_URL }}";			// app的url前缀,在ajax调用的时候，应该加上该前缀
+	var remote_static_url = "{{ REMOTE_STATIC_URL }}";   //远程资源链接，403页面需要，不要删除
+	var debug_mode = JSON.parse("{{ DEBUG }}");	// 是否调试模式
+</script>
+<!--统计js  勿删-->
+<script src="{{ REMOTE_STATIC_URL }}analysis.js?v={{ STATIC_VERSION }}"></script>
+<script src="{{ STATIC_URL }}account/login.js?v={{ STATIC_VERSION }}"></script>
+<script src="{{ STATIC_URL }}js/csrftoken.js?v={{ STATIC_VERSION }}"></script>
+
+<!--version_log_js_insert-->
+<link rel="stylesheet" href="https://magicbox.bk.tencent.com/static_api/v3/assets/artDialog-6.0.4/css/ui-dialog.css"> <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/artDialog-6.0.4/dist/dialog-min.js"></script> <script> function show_modal() {load_modal_frame("{% url "version_log:block" %}");};function load_modal_frame(url) {$.ajax({url: url, type: "GET", dataType: "html", success: function(data) {var d = dialog({height: 600, width: 1105, title: "版本日志", content: data,});d.showModal();}})};function getCookie(name) {var value = "; " + document.cookie;var parts = value.split("; " + name + "=");if (parts.length === 2) return parts.pop().split(";").shift();};if (getCookie("SHOW_VERSION_LOG") === "True") {$(document).ready(function () {show_modal();document.cookie = "SHOW_VERSION_LOG=; path=/; expire=Thu, 01 Jan 1970 00:00:01 GMT;"})}</script>
+
+
+<script>
+    var relative_path = "{{ APP_PATH }}";
+    function is_current_url (sub_url) {
+        const url = site_url+sub_url;
+        return relative_path.indexOf(url) > -1
+    }
+    console.log(relative_path);
+    if ( relative_path == site_url)
+        $('#home').addClass('king-navbar-active');
+    else if (is_current_url('example/app_control/'))
+        $('#app_control').addClass('king-navbar-active');
+    else if (is_current_url("example/test_component/"))
+        $('#test_component').addClass('king-navbar-active');
+    else if (is_current_url("example/test_celery/"))
+        $('#test_celery').addClass('king-navbar-active');
+    else if (is_current_url("example/test_app_tags/"))
+        $('#test_app_tags').addClass('king-navbar-active');
+    else if (is_current_url("dev-guide/"))
+        $('#guide').addClass('king-navbar-active');
+    else if (is_current_url("contact/"))
+        $('#contact').addClass('king-navbar-active');
+
+    function change_language(lang) {
+        $.ajax({
+            url: site_url + 'i18n/setlang/',
+            method: 'post',
+            data: {
+                'language': lang,
+            },
+            success: function (ret) {
+                window.location.reload()
+            }
+        })
+    }
+
+</script>
+{% endblock %}
+
+{% block extra_block %}
+<!--
+    这里放置子页面中附加内容，一般为js，注意子模版中的js如果使用到以上js库，必须放置在这里
+ -->
+{% endblock %}
+</html>

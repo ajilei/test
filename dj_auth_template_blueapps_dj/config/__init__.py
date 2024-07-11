@@ -17,9 +17,9 @@ import os
 
 # This will make sure the app is always imported when
 # Django starts so that shared_task will use this app.
-from blueapps.core.celery import celery_app
+# from blueapps.core.celery import celery_app
 
-__all__ = ["celery_app", "RUN_VER", "APP_CODE", "SECRET_KEY", "BK_URL", "BASE_DIR"]
+__all__ = [ "RUN_VER", "APP_CODE", "SECRET_KEY", "BK_URL", "BASE_DIR"]
 
 
 # app 基本信息
@@ -45,7 +45,7 @@ SECRET_KEY = os.getenv("BKPAAS_APP_SECRET", "")
 # SaaS运行版本，如非必要请勿修改
 RUN_VER = "open"
 # 蓝鲸SaaS平台URL，例如 http://paas.bking.com
-BK_URL = None
+BK_URL =  os.getenv("BK_PAAS_HOST")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

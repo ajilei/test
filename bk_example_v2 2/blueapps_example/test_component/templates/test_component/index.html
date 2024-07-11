@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block head %}
+    <!-- app样式 css -->
+    <link href="{{STATIC_URL}}blueapps_example/test_component/css/style.css" rel="stylesheet">
+    {{block.super}}
+{% endblock %}
+
+{% block content %}
+    <div class="page-contactus">
+        <!-- 内容 start-->
+        <!--comtactus-detail -->
+        <div class="container mt25">
+            <table id="app_list" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>{%trans "业务ID" %}</th>
+                        <th>{%trans "业务名称" %}</th>
+                        <th>{%trans "创建者" %}</th>
+                        <th>{%trans "业务负责人" %}</th>
+                        <th>{%trans "产品负责人" %}</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- 内容 start-->
+    </div>
+{% endblock %}
+
+{% block extra_block %}
+    <script type="text/javascript">
+        //表格(DataTables)
+        var language = {
+            search: "{% trans '搜索：' %}",
+            lengthMenu: "{% trans '每页显示 _MENU_ 记录' %}",
+            zeroRecords: "{% trans '数据未加载！' %}",
+            sEmptyTable: "{% trans '加载无数据！' %}",
+            info: "{% trans '分页 _PAGE_ / _PAGES_' %}",
+            infoEmpty: "{% trans '暂无数据！' %}",
+            infoFiltered: "{% trans '(从 _MAX_ 条数据中搜索)' %}",
+            paginate: {
+                first: "{% trans '首页' %}",
+                last: "{% trans '尾页' %}",
+                previous: "{% trans '上一页' %}",
+                next: "{% trans '下一页' %}",
+            }
+        };
+        $.fn.dataTable.ext.errMode = 'none';
+        $('#app_list').dataTable({
+            paging: true, //隐藏分页
+            ordering: false, //关闭排序
+            info: false, //隐藏左下角分页信息
+            searching: false, //关闭搜索
+            pageLength : 5, //每页显示几条数据
+            lengthChange: false, //不允许用户改变表格每页显示的记录数
+            language: language, //汉化
+            ajax: {
+                'url': '{{SITE_URL}}example/test_component/app_list/',
+                'dataSrc': function (res) {
+                    if (res.result === false) {
+                      alert(res.error.message);
+                      return;
+                    }
+                    for (var i=0, ien=res.data.length ; i<ien ; i++) {
+                        // 处理open版本数据无Creator字段情况
+                        if (!res.data[i].hasOwnProperty("Creator")) {
+                            res.data[i]['Creator'] = '';
+                        }
+                        // 处理tencent版本数据无ProductPm字段情况
+                        if (!res.data[i].hasOwnProperty("ProductPm")) {
+                            res.data[i]['ProductPm'] = '';
+                        }
+                        // 处理有很多名字的两列数据
+                        const maintainers = res.data[i]['Maintainers'].split(";");
+                        var row_str = "";
+                        for (var j=0, jen=maintainers.length; j < jen; j++ ) {
+                            if (maintainers[j] !== '')
+                                row_str += ' <code>' + maintainers[j] + '</code> ';
+                        }
+                        res.data[i]['Maintainers'] = row_str;
+                        //处理ProductP为空值的情况
+                        if(!res.data[i]['ProductPm'])
+                            continue;
+                        const pms = res.data[i]['ProductPm'].split(";");
+                        row_str = "";
+                        for (var j=0, jen=pms.length; j < jen; j++) {
+                            if (pms[j] !== '')
+                                row_str += ' <code>' + pms[j] + '</code> ';
+                        }
+                        res.data[i]['ProductPm'] = row_str;
+                    }
+                    return res.data;
+                }
+            },
+            columns: [
+              { "data": "ApplicationID", "width": "50" },
+              { "data": "ApplicationName", "width": "80" },
+              { "data": "Creator", "width": "80" },
+              { "data": "Maintainers" },
+              { "data": "ProductPm" },
+            ]
+        });
+    </script>
+{% endblock %}
